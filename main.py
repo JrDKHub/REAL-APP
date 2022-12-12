@@ -6,9 +6,6 @@ import time
 import functions as fck
 
 
-from streamlit_folium import st_folium
-import folium
-
 
 st.set_page_config(
     page_title="REAL APP",
