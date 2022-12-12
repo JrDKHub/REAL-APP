@@ -49,7 +49,7 @@ def main():
 
     with st.container():
         st.header("Trouver un bien")
-        adress , search = st.empty()
+        adress , search = st.empty(), st.empty()
 
         adress.text_input(placeholder="Saisir une adresse")
 
