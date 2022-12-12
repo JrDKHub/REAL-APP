@@ -1,11 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from bokeh.plotting import figure
-import plotly.figure_factory as ff
-import seaborn as sns
-import pydeck as pdk
 import time
 
 import functions as fck
@@ -39,11 +34,11 @@ def main():
     option = st.selectbox('Choisissez une année 📅',('2022','2021','2022'))
 
     if(option == '2022'):
-        data_url = 'data/full_2022.csv'
+        data_url = "https://www.data.gouv.fr/fr/datasets/r/87038926-fb31-4959-b2ae-7a24321c599a"
     elif(option == '2021'):
-        data_url = 'data/full_2021.csv'
+        pass
     elif(option == '2020'):
-        data_url = 'data/full_2020.csv'
+        pass
 
     # Mis à jour du chargement à chaque itération.
     data_load_state = st.empty()
