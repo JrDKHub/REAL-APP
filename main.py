@@ -48,7 +48,12 @@ def main():
     data_load_state.text('Chargement des données...Terminé 💯!!')
 
     with st.container():
-        st.header('🎚️FILTRES')
+        st.header("Trouver un bien")
+        adress , search = st.empty()
+
+        adress.text_input(placeholder="Saisir une adresse")
+
+        st.subheader('🎚️FILTRES')
         local , pieces , surface = st.columns([0.3,0.3,0.3])
 
         with local.expander("🏘️ Type de local"):
@@ -65,6 +70,8 @@ def main():
             options=[1, 100,200,300,400,500,700,800,30000],
             value=(1,100)
         )
+
+        search.button("Rechercher")
         
         
 
