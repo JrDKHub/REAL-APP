@@ -78,43 +78,89 @@ def main():
             value=(1, 100)
         )
 
+        local_filter = []
+        if houses:
+            local_filter.append('Maison')
+        if appart:
+            local_filter.append('Appartement')
+        if dep:
+            local_filter.append('Dépendance')
+        if lic:
+            local_filter.append('Local industriel et commercial')
+
         search = st.empty()
         if search.button("Rechercher"):
             
             df1 = clean_data(df)
-
-            local_filter = []
-            if houses:
-                local_filter.append('Maison')
-            if appart:
-                local_filter.append('Appartement')
-            if dep:
-                local_filter.append('Dépendance')
-            if lic:
-                local_filter.append('Local industriel et commercial')
-
-
-            if len(commune) > 0:
-                
-                st.write("Bien de la commune ",commune)
-                st.write(df1.loc[(df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True))])
-
-            if len(voie) > 0 :
             
-                st.write("Bien de la voie ",voie)
-                st.write(df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE, case=True))])
 
-            if cp > 0 :
+            if len(local_filter) == 0:
+
+                if len(commune) > 0:
+                    st.write("Bien de la commune ",commune)
+                    df2 = df1.loc[(df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True))]
+                    # df1 = df1[df['type local'].isin(local_filter)]
+                    df2 = df2[(df2['surface reelle bati'] >= start_surf) & (df2['surface reelle bati'] <= end_surf) ]
+                    df2 = df2[df2['nombre pieces principales'] == pieces]
+                    st.write(df2)
+
+                if len(voie) > 0 :
+                    st.write("Bien de la voie ",voie)
+                    df3 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE, case=True))]
+                    # df1 = df1[df['type local'].isin(local_filter)]
+                    df3 = df3[(df3['surface reelle bati'] >= start_surf) & (df3['surface reelle bati'] <= end_surf) ]
+                    df3 = df3[df3['nombre pieces principales'] == pieces]
+                    st.write(df3)
                 
-                st.write("Bien au code postal ",cp)
-                st.write(df1[df1['code postal'] == cp])
-            
-            if ( cp > 0 and len(voie) > 0 and len(commune) > 0):
-                st.write(df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE , case=True)) & (df1['code postal'] == cp) & (df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True)) ])
+                if cp > 0 :
+                    st.write("Bien au code postal ",cp)
+                    df4 = df1[df1['code postal'] == cp]
+                    # df1 = df1[df['type local'].isin(local_filter)]
+                    df4 = df4[(df4['surface reelle bati'] >= start_surf) & (df4['surface reelle bati'] <= end_surf) ]
+                    df4 = df4[df4['nombre pieces principales'] == pieces]
+                    st.write(df4)
+                
+                if ( cp > 0 and len(voie) > 0 and len(commune) > 0):
+                    df5 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE , case=True)) & (df1['code postal'] == cp) & (df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True)) ]
+                    # df1 = df1[df['type local'].isin(local_filter)]
+                    df5 = df5[(df5['surface reelle bati'] >= start_surf) & (df5['surface reelle bati'] <= end_surf) ]
+                    df5 = df5[df5['nombre pieces principales'] == pieces]
+                    st.write(df5)
 
-            df1 = df1[df['type local'].isin(local_filter)]
-            st.write('Avec les filtres')
-            st.write(df1)
+            if len(local_filter) > 0:
+
+                if len(commune) > 0:
+                    st.write("Bien de la commune ",commune)
+                    df2 = df1.loc[(df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True))]
+                    df2 = df2[df2['type local'].isin(local_filter)]
+                    df2 = df2[(df2['surface reelle bati'] >= start_surf) & (df2['surface reelle bati'] <= end_surf) ]
+                    df2 = df2[df2['nombre pieces principales'] == pieces]
+                    st.write(df2)
+
+                if len(voie) > 0 :
+                    st.write("Bien de la voie ",voie)
+                    df3 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE, case=True))]
+                    df3 = df3[df3['type local'].isin(local_filter)]
+                    df3 = df3[(df3['surface reelle bati'] >= start_surf) & (df3['surface reelle bati'] <= end_surf) ]
+                    df3 = df3[df3['nombre pieces principales'] == pieces]
+                    st.write(df3)
+                
+                if cp > 0 :
+                    st.write("Bien au code postal ",cp)
+                    df4 = df1[df1['code postal'] == cp]
+                    df4 = df4[df4['type local'].isin(local_filter)]
+                    df4 = df4[(df4['surface reelle bati'] >= start_surf) & (df4['surface reelle bati'] <= end_surf) ]
+                    df4 = df4[df4['nombre pieces principales'] == pieces]
+                    st.write(df4)
+                
+                if ( cp > 0 and len(voie) > 0 and len(commune) > 0):
+                    df5 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE , case=True)) & (df1['code postal'] == cp) & (df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True)) ]
+                    df5 = df5[df5['type local'].isin(local_filter)]
+                    df5 = df5[(df5['surface reelle bati'] >= start_surf) & (df5['surface reelle bati'] <= end_surf) ]
+                    df5 = df5[df5['nombre pieces principales'] == pieces]
+                    st.write(df5)
+                
+
             
 
     # with st.container():
