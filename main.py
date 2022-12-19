@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 import re
-import streamlit_authenticator as stauth
+# import streamlit_authenticator as stauth
 
 import functions as fck
 
