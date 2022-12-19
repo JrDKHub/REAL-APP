@@ -6,7 +6,7 @@ import time
 #loading data
 @st.cache
 def load_data(data_url):
-    data = pd.read_csv(data_url, sep="|", parse_dates=['Date mutation'])
+    data = pd.read_csv(data_url, sep="|", parse_dates=['Date mutation'] , low_memory=False)
     lowercase = lambda x: str(x).lower()
     data.rename(lowercase, axis='columns', inplace=True)
     return data
