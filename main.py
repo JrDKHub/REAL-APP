@@ -51,137 +51,143 @@ def main():
     with st.container():
 
         st.header("Localiser un bien")
-
+        
+        dep = st.empty()
         commune, cp, voie   = st.columns([0.3,0.3,0.3])
 
-        commune = commune.text_input("Commune", placeholder="ex :  Cachan")
-        voie = voie.text_input("Voie", placeholder="ex : Camille Desmoulins")
-        cp = cp.number_input("Code Postal",format="%i",step=1)
+        dep = dep.selectbox("Choisir le département",df['code departement'].unique())
+
+        if dep :
+            st.warning(" ⚠️Veuillez vous assurez que les informations saisies concernent bien le département choisi!⚠️")
+            df = df[df['code departement'] == dep]
+            commune = commune.text_input("Commune", placeholder="ex :  Cachan")
+            voie = voie.text_input("Voie", placeholder="ex : Camille Desmoulins")
+            cp = cp.number_input("Code Postal",format="%i",step=1)
+            
         
-       
 
-        st.subheader('🎚️FILTRES')
+            st.subheader('🎚️FILTRES')
 
-        local, pieces, surface = st.columns([0.3, 0.3, 0.3])
+            local, pieces, surface = st.columns([0.3, 0.3, 0.3])
 
-        with local.expander("🏘️ Type de local",expanded=True):
-            st.write("Choisir le type de local")
-            # st.warning('')
-            houses = st.checkbox("Maison")
-            appart = st.checkbox("Appartement")
-            dep = st.checkbox("Dépendance")
-            lic = st.checkbox("Local industriel et commercial")
+            with local.expander("🏘️ Type de local",expanded=True):
+                st.write("Choisir le type de local")
+                # st.warning('')
+                houses = st.checkbox("Maison")
+                appart = st.checkbox("Appartement")
+                dep = st.checkbox("Dépendance")
+                lic = st.checkbox("Local industriel et commercial")
 
-        pieces = pieces.slider("🔢Choisir le nombre minimum de pièces", min_value=1, max_value=6)
+            pieces = pieces.slider("🔢Choisir le nombre minimum de pièces", min_value=1, max_value=6)
 
-        start_surf, end_surf = surface.select_slider(
-            "Choisir l'intervalle de la surface (en m²)",
-            options=[1, 100, 200, 300, 400, 500, 700, 800, 30000],
-            value=(1, 100)
-        )
+            start_surf, end_surf = surface.select_slider(
+                "Choisir l'intervalle de la surface (en m²)",
+                options=[1, 100, 200, 300, 400, 500, 700, 800, 30000],
+                value=(1, 100)
+            )
 
-        local_filter = []
-        if houses:
-            local_filter.append('Maison')
-        if appart:
-            local_filter.append('Appartement')
-        if dep:
-            local_filter.append('Dépendance')
-        if lic:
-            local_filter.append('Local industriel et commercial')
+            local_filter = []
+            if houses:
+                local_filter.append('Maison')
+            if appart:
+                local_filter.append('Appartement')
+            if dep:
+                local_filter.append('Dépendance')
+            if lic:
+                local_filter.append('Local industriel et commercial')
 
-        search = st.empty()
-        if search.button("Rechercher"):
+            search = st.empty()
+            if search.button("Rechercher"):
             
-            df1 = clean_data(df)
-            
-
-            if len(local_filter) == 0:
-
-                if len(commune) > 0:
-                    st.subheader("Bien de la commune ",commune)
-                    df2 = df1.loc[(df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True))]
-                    df2 = no_loc_filters(df2, local_filter , start_surf , end_surf , pieces)
-                    st.write(df2)
-                    st.subheader("Statistiques de recherches sur la commune ", commune)
-                    st.write(df2.groupby(['type local'])['prix m2'].median())
-
-
-                if len(voie) > 0 :
-                    st.write("Bien de la voie ",voie)
-                    df3 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE, case=True))]
-                    df3 = no_loc_filters(df3, local_filter , start_surf , end_surf , pieces)
-                    st.write(df3)
-
-                    st.subheader("Statistiques de recherches")
-                    st.write(df3.groupby(['type local'])['prix m2'].median())
+                df1 = clean_data(df)
                 
-                if cp > 0 :
-                    st.write("Bien au code postal ",cp)
-                    df4 = df1[df1['code postal'] == cp]
-                    df4 = no_loc_filters(df4, local_filter , start_surf , end_surf , pieces)
-                    st.write(df4)
 
-                    st.subheader("Statistiques de recherches")
-                    st.write(df4.groupby(['type local'])['prix m2'].median())
-                
-                if ( cp > 0 and len(voie) > 0 and len(commune) > 0):
-                    df5 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE , case=True)) & (df1['code postal'] == cp) & (df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True)) ]
-                    df5 = no_loc_filters(df5, local_filter , start_surf , end_surf , pieces)
-                    st.write(df5)
+                if len(local_filter) == 0:
 
-                    st.header("Statistiques de recherches")
-                    tab1 , tab2 , tab3 = st.tabs(['Prix du m²','Valeur foncière','masquer'])
-                    with tab1:
-                        st.subheader("Les prix médians du m2 par type de local")
+                    if len(commune) > 0:
+                        st.subheader("Bien de la commune ",commune)
+                        df2 = df1.loc[(df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True))]
+                        df2 = no_loc_filters(df2, local_filter , start_surf , end_surf , pieces)
+                        st.write(df2)
+                        st.subheader("Statistiques de recherches sur la commune ", commune)
+                        st.write(df2.groupby(['type local'])['prix m2'].median())
+
+
+                    if len(voie) > 0 :
+                        st.write("Bien de la voie ",voie)
+                        df3 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE, case=True))]
+                        df3 = no_loc_filters(df3, local_filter , start_surf , end_surf , pieces)
+                        st.write(df3)
+
+                        st.subheader("Statistiques de recherches")
+                        st.write(df3.groupby(['type local'])['prix m2'].median())
+                    
+                    if cp > 0 :
+                        st.write("Bien au code postal ",cp)
+                        df4 = df1[df1['code postal'] == cp]
+                        df4 = no_loc_filters(df4, local_filter , start_surf , end_surf , pieces)
+                        st.write(df4)
+
+                        st.subheader("Statistiques de recherches")
+                        st.write(df4.groupby(['type local'])['prix m2'].median())
+                    
+                    if ( cp > 0 and len(voie) > 0 and len(commune) > 0):
+                        df5 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE , case=True)) & (df1['code postal'] == cp) & (df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True)) ]
+                        df5 = no_loc_filters(df5, local_filter , start_surf , end_surf , pieces)
+                        st.write(df5)
+
+                        st.header("Statistiques de recherches")
+                        tab1 , tab2 , tab3 = st.tabs(['Prix du m²','Valeur foncière','masquer'])
+                        with tab1:
+                            st.subheader("Les prix médians du m2 par type de local")
+                            st.write(df5.groupby(['type local'])['prix m2'].median())
+                        with tab2:
+                            st.subheader("Les valeurs foncières médianes par type de local")
+                            st.write(df5.groupby(['type local'])['valeur fonciere'].median())
+                        with tab3:  
+                            pass
+
+
+
+
+
+
+                if len(local_filter) > 0:
+
+                    if ( cp > 0 and len(voie) > 0 and len(commune) > 0):
+                        df5 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE , case=True)) & (df1['code postal'] == cp) & (df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True)) ]
+                        df5 = all_filters(df5, local_filter , start_surf , end_surf , pieces)
+                        st.write(df5)
+
+                        st.subheader("Statistiques de recherches")
                         st.write(df5.groupby(['type local'])['prix m2'].median())
-                    with tab2:
-                        st.subheader("Les valeurs foncières médianes par type de local")
-                        st.write(df5.groupby(['type local'])['valeur fonciere'].median())
-                    with tab3:  
-                        pass
 
+                    elif len(commune) > 0:
+                        st.write("Bien de la commune ",commune)
+                        df2 = df1.loc[(df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True))]
+                        df2 = all_filters(df2, local_filter , start_surf , end_surf , pieces)
+                        st.write(df2)
 
+                        st.subheader("Statistiques de recherches")
+                        st.write(df2.groupby(['type local'])['prix m2'].median())
 
+                    elif len(voie) > 0 :
+                        st.write("Bien de la voie ",voie)
+                        df3 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE, case=True))]
+                        df3 = all_filters(df3, local_filter , start_surf , end_surf , pieces)
+                        st.write(df3)
 
+                        st.subheader("Statistiques de recherches")
+                        st.write(df3.groupby(['type local'])['prix m2'].median())
+                    
+                    elif cp > 0 :
+                        st.write("Bien au code postal ",cp)
+                        df4 = df1[df1['code postal'] == cp]
+                        df4 = all_filters(df4, local_filter , start_surf , end_surf , pieces)
+                        st.write(df4)
 
-
-            if len(local_filter) > 0:
-
-                if ( cp > 0 and len(voie) > 0 and len(commune) > 0):
-                    df5 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE , case=True)) & (df1['code postal'] == cp) & (df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True)) ]
-                    df5 = all_filters(df5, local_filter , start_surf , end_surf , pieces)
-                    st.write(df5)
-
-                    st.subheader("Statistiques de recherches")
-                    st.write(df5.groupby(['type local'])['prix m2'].median())
-
-                elif len(commune) > 0:
-                    st.write("Bien de la commune ",commune)
-                    df2 = df1.loc[(df1['commune'].str.contains(commune,flags=re.IGNORECASE, case=True))]
-                    df2 = all_filters(df2, local_filter , start_surf , end_surf , pieces)
-                    st.write(df2)
-
-                    st.subheader("Statistiques de recherches")
-                    st.write(df2.groupby(['type local'])['prix m2'].median())
-
-                elif len(voie) > 0 :
-                    st.write("Bien de la voie ",voie)
-                    df3 = df1.loc[(df1['voie'].str.contains(voie,flags=re.IGNORECASE, case=True))]
-                    df3 = all_filters(df3, local_filter , start_surf , end_surf , pieces)
-                    st.write(df3)
-
-                    st.subheader("Statistiques de recherches")
-                    st.write(df3.groupby(['type local'])['prix m2'].median())
-                
-                elif cp > 0 :
-                    st.write("Bien au code postal ",cp)
-                    df4 = df1[df1['code postal'] == cp]
-                    df4 = all_filters(df4, local_filter , start_surf , end_surf , pieces)
-                    st.write(df4)
-
-                    st.subheader("Statistiques de recherches")
-                    st.table(df4.groupby(['type local'])['prix m2'].median())
+                        st.subheader("Statistiques de recherches")
+                        st.table(df4.groupby(['type local'])['prix m2'].median())
                 
                 
             
