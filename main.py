@@ -222,7 +222,7 @@ def clean_data(df):
     # df1['surface reelle bati'] = np.round(df1['surface reelle bati'], decimals=2)
 
     df1 = df1[df1['surface reelle bati'] > 0]
-    df1 = df1[df1['valeur fonciere'] > 0]
+    df1 = df1[df1['valeur fonciere'] > 1]
 
     df1['prix m2'] = df1['valeur fonciere']//(df1['surface reelle bati'])
     df1['prix m2'] = np.round(df1['prix m2'], decimals = 2)
