@@ -1,0 +1,17 @@
+credentials:
+  usernames:
+    laurent:
+      email: laurent@hite.io
+      name: laurent
+      password: '$2b$12$nSemcoQflNnlZdn.WTTanO/y3yElZYZEPdYe5O/ZNYDWhMgpsQLum' #  hashed 'admin'
+    dakan:
+      email: arsene@hite.io
+      name: Dakan
+      password: '$2b$12$Uv9E5E39uaGlIO4.JEUU5eX93Z0nzCMNFDpjYi4n/ngN6jwx23AaK' # hashed 'admin'
+cookie:
+  expiry_days: 30 #the number of days to expiry for a JWT cookie that will be stored on the client’s browser to enable passwordless reauthentication
+  key: 'cook_exp'
+  name: 'functional'
+preauthorized:
+  emails:
+  - jrdakan22@gmail.com
