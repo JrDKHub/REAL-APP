@@ -60,7 +60,6 @@ if st.session_state["authentication_status"]:
 
     if st.button("Explorez, visualisez, Estimez!!!"):
         home.main()
-        pass
 
 # logging fail
 elif st.session_state["authentication_status"] == False:
